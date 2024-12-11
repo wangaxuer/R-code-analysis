@@ -7,11 +7,11 @@ head(EC)
 dd <- datadist(EC)
 options(datadist='dd')
 for(knot in 3:10)
-  fit <- cph(Surv(time,cancer)~rcs(CRP,5) + sex + age + race + BMI + 吸烟和不吸烟 + drink + MET + TDI + 癌症家族史 + income + 少睡失眠, X=TRUE,y=TRUE,data=EC)
+  fit <- cph(Surv(time,cancer)~rcs(CRP,5) + sex + age + race + BMI + smoke + drink + MET + TDI + history + income + insomnia, X=TRUE,y=TRUE,data=EC)
              tmp<- extractAIC(fit)
              if(knot==5){AIC=tmp[2];nk=5}
             
-fit <-cph(Surv(time,cancer)~rcs(CRP,5)+ sex + age + race + BMI + 吸烟和不吸烟 + drink + MET + TDI + 癌症家族史 + income + 少睡失眠,X=TRUE,y=TRUE,data=EC)
+fit <-cph(Surv(time,cancer)~rcs(CRP,5)+ sex + age + race + BMI + smoke + drink + MET + TDI + history + income + insomnia,X=TRUE,y=TRUE,data=EC)
 
 anova(fit)
 
@@ -26,15 +26,15 @@ p_value <- pchisq(chi_sq, df, lower.tail = FALSE)
 print(p_value, digits = 10)
 
 
-HR<-Predict(fit,C反应蛋白,fun=exp)
+HR<-Predict(fit,CRP,fun=exp)
 head(HR)
 write.csv(HR, file = "D:\\HuaweiMoveData\\Users\\86180\\Desktop\\RCS CRP incidence.csv", row.names = FALSE)
 
 ggplot()+
-  geom_line(data=HR,aes(WBC,yhat),
+  geom_line(data=HR,aes(CRP,yhat),
             linetype="solid",size=2,alpha = 10.0,colour="#a7b9d7")+
         geom_ribbon(data=HR,
-                   aes(WBC,ymin =lower,ymax=upper),
+                   aes(CRP,ymin =lower,ymax=upper),
                    alpha = 0.4,fill="#a7b9d7")+
   theme_classic()+
   geom_hline(yintercept=1,linetype=2,size=1)+
